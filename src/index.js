@@ -13,6 +13,9 @@ const port = process.env.PORT || constants.expressPort;
 app.use(express.json())
 
 
+/**
+ * Create a user
+ */
 app.post('/users',(req,res) =>{
 
     if(req){
@@ -28,6 +31,10 @@ app.post('/users',(req,res) =>{
     }
 })
 
+
+/**
+ * Get all users
+ */
 app.get('/users', async (req,res) =>{
     try{
         const users = await User.find({});
@@ -41,6 +48,9 @@ app.get('/users', async (req,res) =>{
 })
 
 
+/**
+ * Get a user by id
+ */
 app.get('/users/:id', async (req,res) =>{
     try{
         const {id} = req.params;
@@ -55,6 +65,9 @@ app.get('/users/:id', async (req,res) =>{
     }
 })
 
+/**
+ * Create a task
+ */
 app.post('/tasks',(req, res) =>{
      if(req){
         const task = new Task(req.body)
@@ -68,6 +81,9 @@ app.post('/tasks',(req, res) =>{
     }
 })
 
+/**
+ * get all tasks
+ */
 app.get('/tasks', async (req,res) =>{
     try{
         const tasks = await Task.find({});
@@ -80,6 +96,9 @@ app.get('/tasks', async (req,res) =>{
     }
 })
 
+/**
+ * Get a task by id
+ */
 app.get('/tasks/:id', async (req,res) =>{
     try{
         const {id} = req.params;
