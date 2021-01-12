@@ -2,10 +2,8 @@ const express = require('express')
 const chalk = require('chalk');
 
 const constants = require('./constants/config');
-const mongoose = require('./db/mongoose');
 const User = require('./models/users');
 const Task = require('./models/tasks');
-const tasks = require('./models/tasks');
 
 
 const app = express();
