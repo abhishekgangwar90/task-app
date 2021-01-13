@@ -80,12 +80,29 @@ router.patch('/tasks/:id',async (req, res) =>{
     }
 
     try {
-        const task = await Task.findByIdAndUpdate(id, req.body,{new: true, runValidators: true});
+        // without middleware
+        // const task = await Task.findByIdAndUpdate(id, req.body,{new: true, runValidators: true});
+
+        //with middleware  => setup in models file
+
+        //find the task by id
+        const task = await Task.findById(id);
+
+        // error if no task
         if(!task){
            console.log(chalk.red(errorCodes.task.invalidTaskId))
            return res.status(400).send(e)
         }
-        res.send(task)
+
+        // if task is there then update new values
+        requestBody.forEach(key =>{
+            task[key] = req.body[key]
+        })
+
+        // save the document
+        await task.save()
+        res.send(task);
+
     } catch (e) {
         console.log(chalk.red(e))
         res.status(400).send(e)
