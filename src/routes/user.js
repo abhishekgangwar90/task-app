@@ -72,16 +72,51 @@ router.patch('/users/:id',async (req, res) =>{
     }
 
     try {
-        const user = await User.findByIdAndUpdate(id, req.body,{new: true, runValidators: true});
+        // without middleware setup
+        // const user = await User.findByIdAndUpdate(id, req.body,{new: true, runValidators: true});
+        
+        // with middleware => setup in models file
+
+        //find a user by id
+        const user = await User.findById(id);
+
+        //if no user then send back error
         if(!user){
             console.log(chalk.red(errorCodes.user.invalidUserIdError))
             return res.status(400).send(e)
         }
-        res.send(user)
+
+        // else setting up update the value for each key;
+        Object.keys(req.body).forEach(key =>{
+            user[key] = req.body[key]
+        })
+        //save the document and send back the updated user
+        await user.save();
+        res.send(user);
+        
     } catch (e) {
         console.log(chalk.red(e))
         res.status(400).send(e)
     }
+})
+
+
+/**
+ * Delete A User
+ */
+router.delete('/users/:id', async (req,res) =>{
+    const {id} = req.params;
+   try {
+        const user = await User.findByIdAndDelete(id);
+        if(!user){
+            console.log(chalk.red(errorCodes.user.invalidUserIdError));
+            return res.status(400).send(errorCodes.user.invalidUserIdError)
+        }
+        res.send(user)
+   } catch (error) {
+       console.log(chalk.red(error));
+       res.status(500).send(error)
+   }
 })
 
 module.exports = router;

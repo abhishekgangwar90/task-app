@@ -92,4 +92,20 @@ router.patch('/tasks/:id',async (req, res) =>{
     }
 })
 
+
+router.delete('/tasks/:id', async (req,res) =>{
+    const {id} = req.params;
+   try {
+        const task = await Task.findByIdAndDelete(id);
+        if(!task){
+            console.log(chalk.red(errorCodes.task.invalidTaskIdError));
+            return res.status(400).send(errorCodes.task.invalidTaskIdError)
+        }
+        res.send(task)
+   } catch (error) {
+       console.log(chalk.red(error));
+       res.status(500).send(error)
+   }
+})
+
 module.exports = router;
