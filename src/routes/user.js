@@ -63,10 +63,12 @@ router.get('/users/:id', async (req,res) =>{
  */
 router.patch('/users/:id',async (req, res) =>{
     const {id} = req.params;
-    debugger
-    if(!req.body){
-        console.log(chalk.red(errorCodes.task.invalidTaskId));
-        return res.status(400).send(e);
+
+    const requestBody = Object.keys(req.body);
+    
+   if(requestBody.length ===0){
+        console.log(chalk.red(errorCodes.invalidUpdationReqError))
+        return res.status(400).send(errorCodes.invalidUpdationReqError)
     }
 
     try {

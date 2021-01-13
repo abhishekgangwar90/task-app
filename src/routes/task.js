@@ -69,9 +69,9 @@ router.patch('/tasks/:id',async (req, res) =>{
     const requestBody = Object.keys(req.body);
     const allowedKeys = ['title', 'description','isComplete','status','createDate']
 
-    if(!req.body){
-        console.log(chalk.red(errorCodes.task.invalidTaskId))
-        return res.status(400).send(e)
+    if(requestBody.length ===0){
+        console.log(chalk.red(errorCodes.invalidUpdationReqError))
+        return res.status(400).send(errorCodes.invalidUpdationReqError)
     }
 
     if(!requestBody.every(elm => allowedKeys.indexOf(elm) !== -1)){
