@@ -36,6 +36,42 @@ const userSchema = new mongoose.Schema({
     },
 })
 
+
+userSchema.statics.findByEmail = async (email) => {
+    try{
+        const user = await User.findOne({email})
+        if(!user){
+            return null
+        }
+        return user;
+    }catch(e){
+        throw new Error('UnExpected Error');
+    }
+}
+
+
+userSchema.statics.findByCredentials = async (email, password) =>{
+   try {
+        const userByEmail = await User.findByEmail(email);
+
+        if(!userByEmail){
+            return null;
+        }
+
+        const isMatch = await bcrypt.compare(password, userByEmail.password)
+        // comparing both passwords
+        if(!isMatch){
+            return null;
+        }
+
+        return userByEmail;
+
+   } catch (error) {
+       throw new Error('UnExpected Error')
+   }
+}
+
+
 userSchema.pre('save', async function(next){
     const user = this;
 
@@ -45,4 +81,6 @@ userSchema.pre('save', async function(next){
     next();
 })
 
-module.exports = mongoose.model('User',userSchema)
+const User = mongoose.model('User',userSchema);
+
+module.exports = User;

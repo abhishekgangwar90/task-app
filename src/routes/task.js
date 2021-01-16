@@ -70,13 +70,13 @@ router.patch('/tasks/:id',async (req, res) =>{
     const allowedKeys = ['title', 'description','isComplete','status','createDate']
 
     if(requestBody.length ===0){
-        console.log(chalk.red(errorCodes.invalidUpdationReqError))
-        return res.status(400).send(errorCodes.invalidUpdationReqError)
+        console.log(chalk.red(errorCodes.invalidReqError))
+        return res.status(400).send(errorCodes.invalidReqError)
     }
 
     if(!requestBody.every(elm => allowedKeys.indexOf(elm) !== -1)){
         console.log(chalk.red('Invalid key found'));
-        return res.status(400).send(errorCodes.invalidUpdationReqError)
+        return res.status(400).send(errorCodes.invalidReqError)
     }
 
     try {

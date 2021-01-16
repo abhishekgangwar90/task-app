@@ -67,8 +67,8 @@ router.patch('/users/:id',async (req, res) =>{
     const requestBody = Object.keys(req.body);
     
    if(requestBody.length ===0){
-        console.log(chalk.red(errorCodes.invalidUpdationReqError))
-        return res.status(400).send(errorCodes.invalidUpdationReqError)
+        console.log(chalk.red(errorCodes.invalidReqError))
+        return res.status(400).send(errorCodes.invalidReqError)
     }
 
     try {
@@ -118,5 +118,29 @@ router.delete('/users/:id', async (req,res) =>{
        res.status(500).send(error)
    }
 })
+
+
+router.post('/users/login',async (req,res) =>{
+
+    if(Object.keys(req.body).length === 0){
+        return res.status(400).send(errorCodes.invalidReqError)
+    }
+
+    const {email, password} = req.body;
+
+    try{
+        const user = await User.findByCredentials(email, password);
+
+        if(!user){
+            console.log(chalk.red(errorCodes.user.inValidLoginCreds));
+            return res.status(404).send(errorCodes.user.inValidLoginCreds);
+        }
+        res.send(user);
+
+    }catch(e){
+        res.status(400).send(e)
+    }
+})
+
 
 module.exports = router;

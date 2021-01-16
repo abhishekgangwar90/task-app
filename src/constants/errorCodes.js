@@ -10,6 +10,7 @@ module.exports = {
         invalidUserIdError: 'Unable to find user by given id, Please try providing another Id.',
         invalidEmailError: 'Invalid email address, Please provide a valid Email Address.',
         shortPasswordError: 'Password length is too short, Please provide a password with minimum 8 length.',
+        inValidLoginCreds: 'Invalid Login Credentials, Please try again.'
     },
-    invalidUpdationReqError: 'Invlid Updation request, Please check a the request body and try again'
+    invalidReqError: 'Invlid request, Please check a the request body and try again'
 }
