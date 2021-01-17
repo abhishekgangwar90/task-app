@@ -38,6 +38,10 @@ module.exports = mongoose.model('Tasks',{
         type: Boolean,
         required: true
     },
+    createdBy: {
+        type: String,
+        required: true,
+    },
     createdDate: {
         type: String,
         trim: true,

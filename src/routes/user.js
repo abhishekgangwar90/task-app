@@ -3,6 +3,7 @@ const chalk = require('chalk');
 
 const errorCodes = require('../constants/errorCodes');
 const User = require('../models/users');
+const auth = require('../middlewares/auth')
 
 
 const router = express.Router()
@@ -14,8 +15,10 @@ const router = express.Router()
 router.post('/users',async (req,res) =>{
     const user = new User(req.body);
     try{
-        const authToken = await user.createAuthToken();
         await user.save();
+
+        const authToken = await user.createAuthToken();
+
         console.log(chalk.green('User Created Succesfully.'))
         res.status(201).send({user,authToken});
     }catch(e){
@@ -24,10 +27,38 @@ router.post('/users',async (req,res) =>{
     }
 })
 
+
+/**
+ * Login user
+ */
+router.post('/users/login',async (req,res) =>{
+
+    if(Object.keys(req.body).length === 0){
+        return res.status(400).send(errorCodes.invalidReqError)
+    }
+
+    const {email, password} = req.body;
+
+    try{
+        const user = await User.findByCredentials(email, password);
+
+        if(!user){
+            console.log(chalk.red(errorCodes.user.inValidLoginCreds));
+            return res.status(404).send(errorCodes.user.inValidLoginCreds);
+        }
+
+        const authToken = await user.createAuthToken();
+        res.send({user,authToken});
+
+    }catch(e){
+        res.status(400).send(e)
+    }
+})
+
 /**
  * Get all users
  */
-router.get('/users', async (req,res) =>{
+router.get('/users',auth, async (req,res) =>{
     try{
         const users = await User.find({});
         if(!users){
@@ -42,11 +73,11 @@ router.get('/users', async (req,res) =>{
 
 
 /**
- * Get a user by id
+ * Get a users profile by authtoken
  */
-router.get('/users/:id', async (req,res) =>{
+router.get('/users/profile', async (req,res) =>{
     try{
-        const {id} = req.params;
+        const {token} = req.headers;
         const user = await User.findById(id);
         if(!user){
            console.log(chalk.red(errorCodes.user.invalidUserIdError))
@@ -121,27 +152,6 @@ router.delete('/users/:id', async (req,res) =>{
 })
 
 
-router.post('/users/login',async (req,res) =>{
-
-    if(Object.keys(req.body).length === 0){
-        return res.status(400).send(errorCodes.invalidReqError)
-    }
-
-    const {email, password} = req.body;
-
-    try{
-        const user = await User.findByCredentials(email, password);
-
-        if(!user){
-            console.log(chalk.red(errorCodes.user.inValidLoginCreds));
-            return res.status(404).send(errorCodes.user.inValidLoginCreds);
-        }
-        res.send(user);
-
-    }catch(e){
-        res.status(400).send(e)
-    }
-})
 
 
 module.exports = router;

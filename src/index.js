@@ -5,13 +5,20 @@ const chalk = require('chalk');
 const mongoose = require('./db/mongoose')
 const constants = require('./constants/config');
 
+// routes
 const userRouter = require('./routes/user');
 const taskRouter = require('./routes/task')
 
 
-const app = express();
+//middlewares
+const auth = require('./middlewares/auth')
 
+const app = express();
 const port = process.env.PORT || constants.expressPort;
+
+
+
+app.use(auth)
 
 app.use(express.json());
 app.use(userRouter);

@@ -1,9 +1,9 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
 const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
 
 const errorCodes = require('../constants/errorCodes');
+const jwtUtil = require('../utils/jwt');
 
 const userSchema = new mongoose.Schema({
     name:{
@@ -38,22 +38,31 @@ const userSchema = new mongoose.Schema({
     },
     tokens:[
         {
-            type: String,
-            required: true
+            authToken:{
+                type: String,
+                required: true
+            }
         }
     ]
 })
 
 
-// userSchema.method.saveAuthToken = async function(token){
-//     const user = this;
-//     user.tokens.token
-// }
-
 userSchema.methods.createAuthToken = async function(){
     const user = this;
-    const authToken = await jwt.sign({id : user.id}, 'MyPrivateKey', {expiresIn:'7 days'})
-    return authToken;
+   
+    try {
+        //creating token
+        const authToken = await jwtUtil.generateJWT({_id : user._id.toString()},'MyPrivateKey', '7 days' )
+        
+        // saving token in user document, so that this can be identified later
+        user.tokens  = user.tokens.concat({authToken});
+        await user.save();
+
+        // returning authtoken
+        return authToken;
+    } catch (error) {
+        throw new Error('UnExpected Error')
+    }
 }
 
 userSchema.methods.getAuthToken = function(email,){
