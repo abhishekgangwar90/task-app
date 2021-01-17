@@ -22,3 +22,20 @@
 //     //     console.log('done')
 //     // })
 // })
+
+
+// const jwt = require('jsonwebtoken');
+
+
+
+// async function tokenC(){
+// try {
+//     const token = await jwt.sign({id: 'abhishek'}, 'hellohello',{expiresIn: '7 days'});
+//     console.log(token);
+// } catch (error) {
+//     console.log(error)
+// }
+// }
+
+
+// tokenC()

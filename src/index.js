@@ -1,6 +1,7 @@
 const express = require('express')
 const chalk = require('chalk');
 
+// adding mongoose so it can load first and setup db connection.
 const mongoose = require('./db/mongoose')
 const constants = require('./constants/config');
 

@@ -14,12 +14,13 @@ const router = express.Router()
 router.post('/users',async (req,res) =>{
     const user = new User(req.body);
     try{
+        const authToken = await user.createAuthToken();
         await user.save();
         console.log(chalk.green('User Created Succesfully.'))
-        res.status(201).send(user);
+        res.status(201).send({user,authToken});
     }catch(e){
         console.log(chalk.red(e));
-        res.status(400).send(e.message);  
+        res.status(400).send(e);  
     }
 })
 

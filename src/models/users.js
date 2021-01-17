@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 
 const errorCodes = require('../constants/errorCodes');
 
@@ -35,9 +36,35 @@ const userSchema = new mongoose.Schema({
         type: String,
         trim: true,
     },
+    tokens:[
+        {
+            type: String,
+            required: true
+        }
+    ]
 })
 
 
+// userSchema.method.saveAuthToken = async function(token){
+//     const user = this;
+//     user.tokens.token
+// }
+
+userSchema.methods.createAuthToken = async function(){
+    const user = this;
+    const authToken = await jwt.sign({id : user.id}, 'MyPrivateKey', {expiresIn:'7 days'})
+    return authToken;
+}
+
+userSchema.methods.getAuthToken = function(email,){
+    const user = this;
+}
+
+
+/**
+ * Returns user/error based on provided email.
+ * @param {*} email 
+ */
 userSchema.statics.findByEmail = async (email) => {
     try{
         const user = await User.findOne({email})
@@ -51,6 +78,11 @@ userSchema.statics.findByEmail = async (email) => {
 }
 
 
+/**
+ * Returns User/error based on Provided email and password. 
+ * @param {*} email 
+ * @param {*} password 
+ */
 userSchema.statics.findByCredentials = async (email, password) =>{
    try {
         const userByEmail = await User.findByEmail(email);
