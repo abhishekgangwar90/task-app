@@ -12,7 +12,7 @@ const router = express.Router()
 /**
  * Create a user
  */
-router.post('/users',async (req,res) =>{
+router.post('/users/new',async (req,res) =>{
     const user = new User(req.body);
     try{
         await user.save();
@@ -53,6 +53,20 @@ router.post('/users/login',async (req,res) =>{
     }catch(e){
         res.status(400).send(e)
     }
+})
+
+
+router.post('/users/logout', auth, async (req, res) =>{
+   try {
+        req.user.tokens = req.user.tokens.filter(elm=> elm.authToken !== req.token)
+
+        await req.user.save();
+        return res.send(req.user);
+
+   } catch (error) {
+       console.log(chalk.red('Logout - Something went wrong.'))
+       res.status(500).send()
+   }
 })
 
 /**

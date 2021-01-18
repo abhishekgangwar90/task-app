@@ -1,24 +1,37 @@
 const jwtUtil = require('../utils/jwt')
 const Users = require('../models/users')
-const errorCodes = require('../constants/errorCodes')
+const errorCodes = require('../constants/errorCodes');
+const chalk = require('chalk');
 
-function auth(req,res,next){
+async function auth(req,res,next){
     
-    if(req.headers){
-        const token = req.headers('Authorization').replace('Bearer ','');
+    try {
+        if(req.headers && req.headers.authorization){
+            const token = req.headers['authorization'].replace('Bearer ','');
 
-        const decoded = jwtUtil.verifyJWT(token, 'MyPrivateKey')
+            const decoded = await jwtUtil.verifyJWT(token, 'MyPrivateKey')
 
-        // if invalid then send unauthorized error
-        if(!decoded){
-           return res.status(401).send(errorCodes.unauthorizedError)
+            // if invalid then send unauthorized error
+            if(!decoded){
+                console.log(chalk.red('Auth - User Not Authorized.'));
+                return res.status(401).send(errorCodes.unauthorizedError)
+            }
+            // else find the user and send concat it to request.
+            const user = await Users.findOne({_id: decoded._id, 'tokens.authToken': token});
+
+            if(!user){
+                console.log(chalk.red('Auth- User Not found.'));
+                return res.status(401).send(errorCodes.unauthorizedError)
+            }
+
+            req.user = user;
+            req.token = token;
         }
-        // else find the user and send concat it to request.
-        const user = Users.findOne({_id: decoded._id, 'tokens.token': token})
+        next()
+    } catch (error) {
+        console.log(chalk.red.inverse('Auth - UnExpected error occured'));
+        res.status(500).send();
     }
-
-    next()
-
 }
 
 module.exports = auth;
