@@ -65,6 +65,25 @@ userSchema.methods.createAuthToken = async function(){
     }
 }
 
+
+
+userSchema.methods.toJSON = function(){
+    const user = this;
+
+    const userObj = user.toObject();
+
+    delete userObj._id;
+    delete userObj.__v;
+    delete userObj.tokens;
+    delete userObj.password;
+
+    return userObj;
+}
+
+/**
+ * Returns the Auth token based on email
+ * @param {*} email 
+ */
 userSchema.methods.getAuthToken = function(email,){
     const user = this;
 }

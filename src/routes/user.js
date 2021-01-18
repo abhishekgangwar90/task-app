@@ -55,7 +55,9 @@ router.post('/users/login',async (req,res) =>{
     }
 })
 
-
+/**
+ * Logout user
+ */
 router.post('/users/logout', auth, async (req, res) =>{
    try {
         req.user.tokens = req.user.tokens.filter(elm=> elm.authToken !== req.token)
@@ -89,10 +91,9 @@ router.get('/users',auth, async (req,res) =>{
 /**
  * Get a users profile by authtoken
  */
-router.get('/users/profile', async (req,res) =>{
+router.get('/users/profile',auth, async (req,res) =>{
     try{
-        const {token} = req.headers;
-        const user = await User.findById(id);
+        const {user} = req;
         if(!user){
            console.log(chalk.red(errorCodes.user.invalidUserIdError))
            return res.status(404).send(errorCodes.user.invalidUserIdError);
@@ -107,8 +108,10 @@ router.get('/users/profile', async (req,res) =>{
 /**
  * Update a user
  */
-router.patch('/users/:id',async (req, res) =>{
-    const {id} = req.params;
+router.patch('/users/update',auth,async (req, res) =>{
+    
+    // user details coming from auth
+    const {user} = req;
 
     const requestBody = Object.keys(req.body);
     
@@ -118,13 +121,16 @@ router.patch('/users/:id',async (req, res) =>{
     }
 
     try {
-        // without middleware setup
-        // const user = await User.findByIdAndUpdate(id, req.body,{new: true, runValidators: true});
-        
-        // with middleware => setup in models file
+        // we don't need to find user anymore because user details are coming from auth middleware
+        {
+            // without middleware setup
+            // const user = await User.findByIdAndUpdate(id, req.body,{new: true, runValidators: true});
+            
+            // with middleware => setup in models file
 
-        //find a user by id
-        const user = await User.findById(id);
+            // find a user by id
+            // const user = await User.findById(id);
+        }
 
         //if no user then send back error
         if(!user){
