@@ -33,9 +33,9 @@ router.post('/tasks',auth,(req, res) =>{
 /**
  * get all tasks
  */
-router.get('/tasks', async (req,res) =>{
+router.get('/tasks',auth, async (req,res) =>{
     try{
-        const tasks = await Task.find({});
+        const tasks = await Task.find({createdBy: req.user._id});
         if(!tasks){
            return res.status(404).send();
         }
@@ -117,10 +117,13 @@ router.patch('/tasks/:id',auth,async (req, res) =>{
 })
 
 
-router.delete('/tasks/:id', async (req,res) =>{
-    const {id} = req.params;
+router.delete('/tasks/:id',auth, async (req,res) =>{
+    const {user, params} = req;
+    const {_id}  = user;
+    const {id} = params;
+
    try {
-        const task = await Task.findByIdAndDelete(id);
+        const task = await Task.findOneAndRemove({_id: id, createdBy: _id});
         if(!task){
             console.log(chalk.red(errorCodes.task.invalidTaskIdError));
             return res.status(400).send(errorCodes.task.invalidTaskIdError)
