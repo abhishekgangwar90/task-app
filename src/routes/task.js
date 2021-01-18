@@ -68,8 +68,10 @@ router.get('/tasks/:id',auth, async (req,res) =>{
 /**
  * Update a Task
  */
-router.patch('/tasks/:id',async (req, res) =>{
-    const {id} = req.params;
+router.patch('/tasks/:id',auth,async (req, res) =>{
+
+    const {user, params} = req;
+    const {id} = params;
 
     const requestBody = Object.keys(req.body);
     const allowedKeys = ['title', 'description','isComplete','status','createDate']
@@ -91,12 +93,12 @@ router.patch('/tasks/:id',async (req, res) =>{
         //with middleware  => setup in models file
 
         //find the task by id
-        const task = await Task.findById(id);
+        const task = await Task.findOne({_id: id, createdBy: user._id});
 
         // error if no task
         if(!task){
-           console.log(chalk.red(errorCodes.task.invalidTaskId))
-           return res.status(400).send(e)
+           console.log(chalk.red(errorCodes.task.invalidTaskIdError))
+           return res.status(400).send(errorCodes.task.invalidTaskIdError)
         }
 
         // if task is there then update new values
