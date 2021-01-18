@@ -49,10 +49,10 @@ router.get('/tasks', async (req,res) =>{
 /**
  * Get a task by id
  */
-router.get('/tasks/:id', async (req,res) =>{
+router.get('/tasks/:id',auth, async (req,res) =>{
     try{
         const {id} = req.params;
-        const task = await Task.findById(id);
+        const task = await Task.findOne({_id:id, createdBy: req.user._id});
         if(!task){
            console.log(chalk.red(errorCodes.task.invalidTaskIdError))
            return res.status(404).send(errorCodes.task.invalidTaskIdError);
