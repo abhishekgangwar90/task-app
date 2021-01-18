@@ -25,9 +25,10 @@ async function auth(req,res,next){
             }
 
             req.user = user;
-            req.token = token;
+            req.token = token;  
         }
         next()
+        
     } catch (error) {
         console.log(chalk.red.inverse('Auth - UnExpected error occured'));
         res.status(500).send();

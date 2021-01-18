@@ -2,6 +2,7 @@ const express = require('express')
 const chalk = require('chalk');
 
 const errorCodes = require('../constants/errorCodes');
+const auth = require('../middlewares/auth');
 const Task = require('../models/tasks');
 
 
@@ -12,9 +13,13 @@ const router = express.Router()
 /**
  * Create a task
  */
-router.post('/tasks',(req, res) =>{
+router.post('/tasks',auth,(req, res) =>{
      if(req){
-        const task = new Task(req.body)
+        const  taskData = {
+            ...req.body,
+            createdBy: req.user._id
+        }
+        const task = new Task(taskData)
         task.save().then(() =>{
             console.log(chalk.green('Task Created Succesfully.'))
             res.status(201).send(task)

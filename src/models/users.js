@@ -47,6 +47,19 @@ const userSchema = new mongoose.Schema({
 })
 
 /**
+ * A Virtual field which is not actually stored in db
+ *  - but used to set some sort of relationship between two documents
+ *  - here i can figure all the tasks create by a certain user. 
+ *  - localField is key in current document.
+ *  - foreignField is key in the document which we are trying to create a reference for.
+ */
+userSchema.virtual('tasks',{
+    ref: 'Task',
+    localField: '_id',
+    foreignField: 'owner'
+})
+
+/**
  * Creates authentication token and returns it
  */
 userSchema.methods.createAuthToken = async function(){

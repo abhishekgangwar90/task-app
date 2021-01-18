@@ -13,5 +13,5 @@ module.exports = {
         inValidLoginCreds: 'Invalid Login Credentials, Please try again.',
     },
     invalidReqError: 'Invlid request, Please check a the request body and try again',
-    unauthorizedError: 'You are unauthorized to visit this, please try logging with valid user.'
+    unauthorizedError: 'You are not authorized to access this Api, please try logging with valid user.'
 }
