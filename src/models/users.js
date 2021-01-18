@@ -46,7 +46,9 @@ const userSchema = new mongoose.Schema({
     ]
 })
 
-
+/**
+ * Creates authentication token and returns it
+ */
 userSchema.methods.createAuthToken = async function(){
     const user = this;
    
@@ -66,13 +68,14 @@ userSchema.methods.createAuthToken = async function(){
 }
 
 
-
+/**
+ * Helps in trimming the returnable user response to only public values
+ */
 userSchema.methods.toJSON = function(){
     const user = this;
 
     const userObj = user.toObject();
 
-    delete userObj._id;
     delete userObj.__v;
     delete userObj.tokens;
     delete userObj.password;

@@ -74,7 +74,7 @@ router.post('/users/logout', auth, async (req, res) =>{
 /**
  * Get all users
  */
-router.get('/users',auth, async (req,res) =>{
+router.get('/users', async (req,res) =>{
     try{
         const users = await User.find({});
         if(!users){
