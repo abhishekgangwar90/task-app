@@ -108,14 +108,69 @@ router.get('/users/profile',auth, async (req,res) =>{
 
 
 
-// const multer = multer.
+const multerUpload = multer({
+    // dest:'',
+    limits:{
+        fileSize: 4000000
+    },
+    fileFilter(req, file, cb){
+        if(!file.originalname.match(/\.(jpg|jpeg|png)$/)){
+            console.log(chalk.red('invalid file upload type -Please provide a valid File for avatar'))
+            return cb('Please provide a valid File for avatar')
+        }
+
+        cb(undefined, true);
+    },
+    
+})
 
 /**
  * Upload profile pic for a user
  */
-router.post('/users/profile/upload', async(req, res, next) =>{
+router.post('/users/profile/uploadAvatar',auth, multerUpload.single('avatar'), async(req, res, next) =>{
 
+   try {
+        if(req.file.buffer){
+            req.user.avatar = req.file.buffer
+        }
+
+        await req.user.save();
+        console.log(chalk.green('file uploaded successfully'))
+        res.send('File uploaded successfully')
+   } catch (error) {
+       console.log(chalk.red('profile pic upload - Something went wrong.'))
+       res.send('Something went wrong')
+   }
+
+},(err, req, res, next) =>{
+    console.log(chalk.red(err.message || 'Something went wrong, unable to upload file'))
+    res.status(500).send({error: err.message || 'Something went wrong, unable to upload file'})
 })
+
+
+/**
+ * delete a profile pic
+ */
+router.delete('/users/profile/deleteAvatar', auth, async (req,res, next) =>{
+    try {
+
+        if(req.user.avatar){
+            req.user.avatar = undefined;
+            await req.user.save();
+            res.send('Profile pic delete sucessfully');
+        } else{
+            res.send(404).send('No profile pic found. can not perform delete operation.')
+        }
+
+    } catch (error) {
+        res.status(404).send('Unable to delete Profile pic, please try after sometime.')        
+    }
+})
+
+/**
+ * Get profile epic
+ */
+router.get('/users/profile/getAvatar')
 
 /**
  * Update a user
