@@ -32,15 +32,36 @@ router.post('/tasks',auth,(req, res) =>{
 
 /**
  * get all tasks
+ * 
+ * - Get all completed Tasks => /tasks?completed=true
+ * - Get all incompleted Tasks => /tasks?completed=false
  */
 router.get('/tasks',auth, async (req,res) =>{
+
+    const {completed, limit, offset} = req.query
+
+    const match= {}
+
+    if(completed === 'true'){
+        match.completed = true
+    } else if(completed === 'false'){
+        match.completed = false
+    }
+
     try{
         // one way of doing
         // const tasks = await Task.find({createdBy: req.user._id});
 
         // another way - by taking advantage of virtuals(check the models)
         // this will fetch the all tasks and set it in virtual -> "tasks" in user model
-        await req.user.populate('tasks').execPopulate();
+        await req.user.populate({
+            path: 'tasks',
+            match,
+            options:{
+               limit: parseInt(limit),
+               skip: parseInt(offset)
+            }
+        }).execPopulate();
 
         if(!req.user.tasks){
            return res.status(404).send([]);
