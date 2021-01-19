@@ -159,18 +159,32 @@ router.delete('/users/profile/deleteAvatar', auth, async (req,res, next) =>{
             await req.user.save();
             res.send('Profile pic delete sucessfully');
         } else{
+            console.log(chalk.red('delete avatar - No profile pic found. can not perform delete operation.'))
             res.send(404).send('No profile pic found. can not perform delete operation.')
         }
 
     } catch (error) {
-        res.status(404).send('Unable to delete Profile pic, please try after sometime.')        
+        console.log(chalk.red('delete avatar - Unable to delete Profile pic, please try after sometime.'))
+        res.status(500).send('Unable to delete Profile pic, please try after sometime.')        
     }
 })
 
 /**
  * Get profile epic
  */
-router.get('/users/profile/getAvatar')
+router.get('/users/profile/getAvatar/:id', auth, async(req,res,next)=>{
+    const {id} = req.params;
+
+    const user = User.findById(id);
+
+    if(!user){
+        console.log(chalk.red('get avatar - Unable to get Profile pic by id, Please try a valid Id'))
+        return res.status(404).send('Unable to get Profile pic by id, Please try a valid Id')
+    }
+
+    res.set('Content-Type','image/jpg')
+    res.send(user.avatar);
+})
 
 /**
  * Update a user
