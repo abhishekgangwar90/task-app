@@ -1,9 +1,10 @@
 const express = require('express')
 const chalk = require('chalk');
+const multer = require('multer')
 
 const errorCodes = require('../constants/errorCodes');
 const User = require('../models/users');
-const auth = require('../middlewares/auth')
+const auth = require('../middlewares/auth');
 
 
 const router = express.Router()
@@ -105,6 +106,17 @@ router.get('/users/profile',auth, async (req,res) =>{
     }
 })
 
+
+
+// const multer = multer.
+
+/**
+ * Upload profile pic for a user
+ */
+router.post('/users/profile/upload', async(req, res, next) =>{
+
+})
+
 /**
  * Update a user
  */
@@ -170,6 +182,9 @@ router.delete('/users/:id', async (req,res) =>{
        res.status(500).send(error)
    }
 })
+
+
+
 
 
 

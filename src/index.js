@@ -2,7 +2,7 @@ const express = require('express')
 const chalk = require('chalk');
 
 // adding mongoose so it can load first and setup db connection.
-const mongoose = require('./db/mongoose')
+require('./db/mongoose');
 const constants = require('./constants/config');
 
 // routes
@@ -18,7 +18,7 @@ const port = process.env.PORT || constants.expressPort;
 
 
 
-app.use(auth)
+// app.use(auth)
 
 app.use(express.json());
 app.use(userRouter);

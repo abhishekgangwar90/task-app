@@ -35,17 +35,24 @@ router.post('/tasks',auth,(req, res) =>{
  * 
  * - Get all completed Tasks => /tasks?completed=true
  * - Get all incompleted Tasks => /tasks?completed=false
+ * - Sort Tasks based on creadtedDate desc order -> /tasks?sortBy=createdAt:desc
  */
 router.get('/tasks',auth, async (req,res) =>{
 
-    const {completed, limit, offset} = req.query
+    const {completed, limit, offset, sortBy} = req.query
 
-    const match= {}
+    const match= {};
+    const sort = {};
 
     if(completed === 'true'){
         match.completed = true
     } else if(completed === 'false'){
         match.completed = false
+    }
+
+    if(sortBy){
+        const sortData = sortBy.split(':');
+        sort[sortData[0]] = sortData[1] === 'desc' ? -1 : 1;
     }
 
     try{
@@ -59,7 +66,8 @@ router.get('/tasks',auth, async (req,res) =>{
             match,
             options:{
                limit: parseInt(limit),
-               skip: parseInt(offset)
+               skip: parseInt(offset),
+               sort
             }
         }).execPopulate();
 
