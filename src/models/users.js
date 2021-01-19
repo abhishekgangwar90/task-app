@@ -44,7 +44,7 @@ const userSchema = new mongoose.Schema({
             }
         }
     ]
-})
+},{timestamps: true})
 
 /**
  * A Virtual field which is not actually stored in db
@@ -56,7 +56,7 @@ const userSchema = new mongoose.Schema({
 userSchema.virtual('tasks',{
     ref: 'Task',
     localField: '_id',
-    foreignField: 'owner'
+    foreignField: 'createdBy'
 })
 
 /**

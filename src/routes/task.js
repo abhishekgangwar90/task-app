@@ -35,11 +35,17 @@ router.post('/tasks',auth,(req, res) =>{
  */
 router.get('/tasks',auth, async (req,res) =>{
     try{
-        const tasks = await Task.find({createdBy: req.user._id});
-        if(!tasks){
-           return res.status(404).send();
+        // one way of doing
+        // const tasks = await Task.find({createdBy: req.user._id});
+
+        // another way - by taking advantage of virtuals(check the models)
+        // this will fetch the all tasks and set it in virtual -> "tasks" in user model
+        await req.user.populate('tasks').execPopulate();
+
+        if(!req.user.tasks){
+           return res.status(404).send([]);
         }
-        res.send(tasks);
+        res.send(req.user.tasks);
     }catch(e){
         console.log(chalk.red(e))
         res.status(500).send(e)
