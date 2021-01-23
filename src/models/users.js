@@ -3,7 +3,10 @@ const validator = require('validator');
 const bcrypt = require('bcrypt');
 
 const errorCodes = require('../constants/errorCodes');
+const config = require('../constants/config');
 const jwtUtil = require('../utils/jwt');
+
+const Task = require('./tasks')
 
 const userSchema = new mongoose.Schema({
     name:{
@@ -70,7 +73,7 @@ userSchema.methods.createAuthToken = async function(){
    
     try {
         //creating token
-        const authToken = await jwtUtil.generateJWT({_id : user._id.toString()},'MyPrivateKey', '7 days' )
+        const authToken = await jwtUtil.generateJWT({_id : user._id.toString()},config.jwtSecret, '7 days' )
         
         // saving token in user document, so that this can be identified later
         user.tokens  = user.tokens.concat({authToken});
@@ -95,6 +98,7 @@ userSchema.methods.toJSON = function(){
     delete userObj.__v;
     delete userObj.tokens;
     delete userObj.password;
+    delete userObj.avatar;
 
     return userObj;
 }
@@ -157,6 +161,19 @@ userSchema.pre('save', async function(next){
 
     if(user.isModified('password')){
         user.password = await bcrypt.hash(user.password, 8);
+    }
+    next();
+})
+
+
+userSchema.pre('remove', async function(next){
+
+    const user = this;
+    try {
+         await Task.deleteMany({createdBy: user._id});
+    } catch (error) {
+        console.log(chalk.red('Unable to delete task when user deleted'))
+        throw new Error('unable to delete tasks when user deleted')
     }
     next();
 })

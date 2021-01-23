@@ -2,6 +2,7 @@ const jwtUtil = require('../utils/jwt')
 const Users = require('../models/users')
 const errorCodes = require('../constants/errorCodes');
 const chalk = require('chalk');
+const config = require('../constants/config')
 
 async function auth(req,res,next){
     
@@ -9,7 +10,7 @@ async function auth(req,res,next){
         if(req.headers && req.headers.authorization){
             const token = req.headers['authorization'].replace('Bearer ','');
 
-            const decoded = await jwtUtil.verifyJWT(token, 'MyPrivateKey')
+            const decoded = await jwtUtil.verifyJWT(token, config.jwtSecret)
 
             // if invalid then send unauthorized error
             if(!decoded){
@@ -30,7 +31,7 @@ async function auth(req,res,next){
         next()
         
     } catch (error) {
-        console.log(chalk.red.inverse('Auth - UnExpected error occured'));
+        console.log(chalk.red.inverse('Auth - UnExpected error ocurred'));
         res.status(500).send();
     }
 }

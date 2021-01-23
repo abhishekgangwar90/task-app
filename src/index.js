@@ -14,9 +14,7 @@ const taskRouter = require('./routes/task')
 const auth = require('./middlewares/auth')
 
 const app = express();
-const port = process.env.PORT || constants.expressPort;
-
-
+const port = process.env.PORT;
 
 // app.use(auth)
 
