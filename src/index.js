@@ -1,6 +1,10 @@
 const chalk = require('chalk');
 const app = require('./app');
 
+
+// adding mongoose so it can load first and setup db connection.
+require('./db/mongoose');
+
 const port = process.env.PORT;
 
 /**

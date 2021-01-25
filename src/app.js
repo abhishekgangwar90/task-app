@@ -1,8 +1,5 @@
 const express = require('express')
 
-// adding mongoose so it can load first and setup db connection.
-require('./db/mongoose');
-
 // routes
 const userRouter = require('./routes/user');
 const taskRouter = require('./routes/task')
