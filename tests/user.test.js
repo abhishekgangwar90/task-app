@@ -34,6 +34,6 @@ test('should fail when creating an user with existing Email', async () =>{
         email: 'Abhishek1234@gmail.com',
         password: 'Akki!212'
     })
-            .expect(400)
+    .expect(400)
 })
 
