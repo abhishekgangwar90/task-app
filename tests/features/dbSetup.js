@@ -20,7 +20,7 @@ const tempUser = {
         password: 'test1234!',
         tokens: [
             {
-                authToken:  jwt.sign({_id: tempUserId},'privateKey',{expiresIn: '24 Hours'})
+                authToken:  jwt.sign({_id: tempUserId},'privateKey')
             }
         ]
 }
@@ -28,7 +28,11 @@ const tempUser = {
 
 const setUpDataBaseConnection = async () =>{
     await User.deleteMany();
-    await new User(tempUser).save();
+    await new User({
+        name: 'Abhishek Gangwar',
+        email: 'Abhishek123@gmail.com',
+        password: 'test1234!',
+    }).save();
 }
 
 module.exports = {

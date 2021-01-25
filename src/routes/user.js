@@ -20,7 +20,7 @@ router.post('/users/new',async (req,res) =>{
 
         const authToken = await user.createAuthToken();
 
-        console.log(chalk.green('User Created Succesfully.'))
+        console.log(chalk.green('User Created Successfully.'))
         res.status(201).send({user,authToken});
     }catch(e){
         console.log(chalk.red(e));
@@ -62,7 +62,7 @@ router.post('/users/login',async (req,res) =>{
 router.post('/users/logout', auth, async (req, res) =>{
    try {
         req.user.tokens = req.user.tokens.filter(elm=> elm.authToken !== req.token)
-
+        
         await req.user.save();
         return res.send(req.user);
 
