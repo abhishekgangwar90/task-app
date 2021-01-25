@@ -8,32 +8,38 @@ beforeEach(async () =>{
    await setUpDataBaseConnection()
 })
 
+const userReqData = {
+    name: 'Rachel Green',
+    email: 'Rachel123@gmail.com',
+    password: 'Rachel1234'
+}
+
 test('should successfully create a user',async ()=>{
-    const user = await request(app)
+    await request(app)
     .post('/users/new')
-    .send({
-        name: 'Abhishek Gangwar',
-        email: 'Abhishek1234@gmail.com',
-        password: 'Akki!212'
-    })
+    .send(userReqData)
     .expect(201)
+
 })
 
 
 test('should fail when creating an user with existing Email', async () =>{
-        const user1 = new User({
-            name: 'Abhishek Gangwar',
-            email: 'Abhishek1234@gmail.com',
-            password: 'Akki!212'
-        }).save();
-
         await request(app)
             .post('/users/new')
             .send({
-        name: 'Abhishek Gangwar',
-        email: 'Abhishek1234@gmail.com',
-        password: 'Akki!212'
-    })
-    .expect(400)
+                name: 'Abhishek Gangwar',
+                email:'Abhishek123@gmail.com',
+                password: 'Abkii@123'
+            })
+            .expect(400)
 })
 
+
+test('should be able to login', async () =>{
+    await request(app)
+        .post('/users/login')
+        .send({
+            email: 'Abhishek123@gmail.com',
+            password: 'test1234!'
+        }).expect(200)
+})
