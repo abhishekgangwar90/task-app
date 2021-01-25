@@ -5,10 +5,12 @@ const jwt = require('jsonwebtoken')
 const User = require('../../src/models/users');
 
 mongoose.connect('mongodb://127.0.0.1:27017/task-manager-test',{useCreateIndex: true, useNewUrlParser: true}).then((res) =>{
-    console.log(chalk.green('Connect to Database'))
+    console.log(chalk.green('Connect to Database --', process.env.MONGODB_URL))
 }).catch(err =>{
     console.log(chalk.red('Unable to connect to database'))
 })
+
+
 
 
 const tempUserId = new mongoose.Types.ObjectId()
