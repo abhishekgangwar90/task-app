@@ -54,3 +54,10 @@ test('should be able to login', async () =>{
 //         .send()
 //         .expect(200)
 // })
+
+test('should be able to show all users', async () =>{
+    await request(app)
+        .post('/users')
+        .send()
+        .expect(200)
+});
